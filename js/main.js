@@ -1,4 +1,4 @@
-d3.csv("Data/sandwiches.csv").then(function(data) {
+d3.tsv("Data/sandwiches.csv").then(function(data) {
 
     console.log("Data dari CSV:", data);
 
