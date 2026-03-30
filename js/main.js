@@ -1,82 +1,52 @@
-// =================
-// 1. DATA SANDWICH 
-// =================
-const data = [
-    { name: "Thesis", price: 7.95, size: "large" },
-    { name: "Dissertation", price: 8.95, size: "large" },
-    { name: "Highlander", price: 6.50, size: "small" },
-    { name: "Just Tuna", price: 6.50, size: "small" },
-    { name: "So-La", price: 7.95, size: "large" },
-    { name: "Special", price: 12.50, size: "small" }
-];
+// 1. Membaca file CSV
+d3.csv("Data/cities.csv").then(function(data) {
+    
+    // 2. Konversi tipe data (Penting: agar populasi bisa dibandingkan secara numerik)
+    data.forEach(d => {
+        d.population = +d.population;
+        d.x = +d.x;
+        d.y = +d.y;
+    });
 
-// ==========================================
-// 2. PENGATURAN CANVAS SVG
-// ==========================================
-const width = 700;
-const height = 400;
+    // 3. Filter Dataset: Hanya yang kolom eu === "true"
+    // Tokyo, Wellington, dan New York akan terhapus di sini
+    const filteredData = data.filter(d => d.eu === "true");
+    
+    console.log("Jumlah data setelah filter EU:", filteredData.length);
 
-const svg = d3.select("#chart")
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height);
+    // 4. Update paragraf di HTML dengan jumlah negara
+    d3.select("#city-count")
+        .text("Jumlah kota di Uni Eropa dalam dataset: " + filteredData.length);
 
-// ==========================================
-// 3. FUNGSI LOGIKA VISUAL
-// ==========================================
+    // 5. Inisialisasi SVG Container
+    const svg = d3.select("#chart")
+        .append("svg")
+        .attr("width", 700)
+        .attr("height", 550);
 
-// Fungsi untuk menentukan ukuran radius
-function getRadius(size) {
-    return size.toLowerCase() === "large" ? 35 : 18;
-}
+    // 6. Menggambar Lingkaran (Circles)
+    svg.selectAll("circle")
+        .data(filteredData)
+        .enter()
+        .append("circle")
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y)
+        // Logika Radius: < 1.000.000 = 4px, >= 1.000.000 = 8px
+        .attr("r", d => (d.population < 1000000 ? 4 : 8))
+        .attr("fill", "steelblue")
+        .attr("stroke", "black")
+        .attr("stroke-width", 1);
 
-// Fungsi untuk menentukan warna berdasarkan harga
-function getColor(price) {
-    return price < 7.00 ? "#ffa500" : "#4682b4"; // Orange jika < 7, Steelblue jika >= 7
-}
+    // 7. Menggambar Label Kota (Text)
+    svg.selectAll(".city-label")
+        .data(filteredData)
+        .enter()
+        .append("text")
+        .attr("class", "city-label") // Menggunakan class sesuai instruksi
+        .text(d => d.city)
+        .attr("x", d => d.x)
+        .attr("y", d => d.y - 12) // Posisi teks sedikit di atas lingkaran
+        // Logika Opacity: Hanya muncul jika populasi >= 1.000.000
+        .style("opacity", d => (d.population >= 1000000 ? 1 : 0));
 
-// ==========================================
-// 4. MENGGAMBAR ELEMEN (CIRCLES & TEXT)
-// ==========================================
-
-// --- Gambar Lingkaran ---
-svg.selectAll("circle")
-    .data(data)
-    .enter()
-    .append("circle")
-    .attr("cx", (d, i) => 80 + i * 95) 
-    .attr("cy", 180)                  
-    .attr("r", d => getRadius(d.size))
-    .attr("fill", d => getColor(d.price))
-    .attr("stroke", "#333")
-    .attr("stroke-width", 2)
-    .style("cursor", "pointer");
-
-// --- Gambar Nama Sandwich ---
-svg.selectAll(".sandwich-name")
-    .data(data)
-    .enter()
-    .append("text")
-    .attr("class", "sandwich-name")
-    .text(d => d.name)
-    .attr("x", (d, i) => 80 + i * 95)
-    .attr("y", 250)                   
-    .attr("font-size", "14px")
-    .attr("font-weight", "bold")
-    .attr("text-anchor", "middle")    
-    .attr("fill", "#333");
-
-// --- Gambar Label Harga ---
-svg.selectAll(".price-label")
-    .data(data)
-    .enter()
-    .append("text")
-    .attr("class", "price-label")
-    .text(d => "$" + d.price.toFixed(2))
-    .attr("x", (d, i) => 80 + i * 95)
-    .attr("y", 275)                   
-    .attr("font-size", "12px")
-    .attr("text-anchor", "middle")
-    .attr("fill", "gray");
-
-console.log("Visualisasi berhasil dimuat langsung dari array data!");
+}).catch(error => console.error("Error loading data:", error));
