@@ -1,40 +1,52 @@
-const sandwiches = [
- { name: "Thesis", price: 7.95, size: "large" },
- { name: "Dissertation", price: 8.95, size: "large" },
- { name: "Highlander", price: 6.50, size: "small" },
- { name: "Just Tuna", price: 6.50, size: "small" },
- { name: "So-La", price: 7.95, size: "large" },
- { name: "Special", price: 12.50, size: "small" }
-];
+d3.csv("data/sandwiches.csv").then(function(data) {
 
-// Membuat SVG
-const svg = d3.select("#chart")
-    .append("svg")
-    .attr("width", 500)
-    .attr("height", 500);
+    console.log("Data dari CSV:", data);
 
-// Fungsi radius
-function getRadius(size){
-    return size === "large" ? 40 : 20;
-}
+    // =========================
+    // KONVERSI TIPE DATA
+    // =========================
+    data.forEach(d => {
+        d.price = +d.price;
+    });
 
-// Fungsi warna
-function getColor(price){
-    return price < 7.00 ? "orange" : "steelblue";
-}
+    // =========================
+    // MEMBUAT SVG
+    // =========================
+    const svg = d3.select("#chart")
+        .append("svg")
+        .attr("width", 500)
+        .attr("height", 500);
 
-// Membuat lingkaran untuk setiap data
-svg.selectAll("circle")
-    .data(sandwiches)
-    .enter()
-    .append("circle")
+    // =========================
+    // FUNGSI RADIUS
+    // =========================
+    function getRadius(size){
+        return size === "large" ? 40 : 20;
+    }
 
-    .attr("cx", (d,i) => 80 + i * 70)
-    .attr("cy", 250)
+    // =========================
+    // FUNGSI WARNA
+    // =========================
+    function getColor(price){
+        return price < 7.00 ? "orange" : "steelblue";
+    }
 
-    .attr("r", d => getRadius(d.size))
+    // =========================
+    // DRAW CIRCLE
+    // =========================
+    svg.selectAll("circle")
+        .data(data)
+        .enter()
+        .append("circle")
 
-    .attr("fill", d => getColor(d.price))
+        .attr("cx", (d,i) => 80 + i * 70)
+        .attr("cy", 250)
 
-    .attr("stroke", "black")
-    .attr("stroke-width", 2);
+        .attr("r", d => getRadius(d.size))
+
+        .attr("fill", d => getColor(d.price))
+
+        .attr("stroke", "black")
+        .attr("stroke-width", 2);
+
+});
