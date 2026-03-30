@@ -1,11 +1,13 @@
-body{
-    font-family: Arial;
+/* Kode Anda yang sudah ada */
+body {
+    font-family: Arial, sans-serif;
     text-align: center;
 }
 
-svg{
+svg {
     border: 1px solid #ccc;
     margin-top: 20px;
+    background-color: #fff; /* Tambahan agar kontras dengan border */
 }
 
 #chart {
@@ -20,4 +22,17 @@ circle {
 circle:hover {
     opacity: 0.7;
     cursor: pointer;
+}
+
+/* --- TAMBAHAN UNTUK TEKS --- */
+text {
+    font-size: 12px;
+    fill: #333;
+    pointer-events: none; /* Agar teks tidak mengganggu saat kursor hover ke lingkaran */
+}
+
+/* Membuat nama sandwich sedikit lebih tebal (opsional) */
+.sandwich-name {
+    font-weight: bold;
+    font-size: 14px;
 }
