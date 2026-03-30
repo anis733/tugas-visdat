@@ -7,3 +7,17 @@ svg{
     border: 1px solid #ccc;
     margin-top: 20px;
 }
+
+#chart {
+    display: flex;
+    justify-content: center;
+}
+
+circle {
+    transition: 0.3s;
+}
+
+circle:hover {
+    opacity: 0.7;
+    cursor: pointer;
+}
