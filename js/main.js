@@ -1,22 +1,14 @@
-// Memuat data dari file CSV (Pastikan pemisah di file .csv adalah koma)
 d3.csv("Data/sandwiches.csv").then(function(data) {
 
-    console.log("Data dari CSV berhasil dimuat:", data);
+    console.log("Data berhasil dimuat:", data);
 
-    // =========================
-    // 1. KONVERSI TIPE DATA
-    // =========================
     data.forEach(d => {
-        d.price = +d.price; // Mengubah string "7.95" menjadi angka 7.95
+        d.price = +d.price; 
     });
 
-    // =========================
-    // 2. PENGATURAN CANVAS SVG
-    // =========================
-    // Menghapus SVG lama jika ada (mencegah duplikasi saat refresh)
     d3.select("#chart").select("svg").remove();
 
-    const width = 600;
+    const width = 700; // Sedikit diperlebar agar teks tidak mepet
     const height = 400;
 
     const svg = d3.select("#chart")
@@ -24,45 +16,53 @@ d3.csv("Data/sandwiches.csv").then(function(data) {
         .attr("width", width)
         .attr("height", height);
 
-    // =========================
-    // 3. FUNGSI LOGIKA VISUAL
-    // =========================
-    
-    // Ukuran berdasarkan kategori 'size'
     function getRadius(size) {
         return size.toLowerCase() === "large" ? 35 : 18;
     }
 
-    // Warna berdasarkan ambang batas harga $7.00
     function getColor(price) {
-        return price < 7.00 ? "#ffa500" : "#4682b4"; // Orange atau Steelblue
+        return price < 7.00 ? "#ffa500" : "#4682b4";
     }
 
-    // =========================
-    // 4. MENGGAMBAR LINGKARAN
-    // =========================
-    const circles = svg.selectAll("circle")
-        .data(data);
-
-    circles.enter()
+    // =========================================
+    // 1. MENGGAMBAR LINGKARAN
+    // =========================================
+    svg.selectAll("circle")
+        .data(data)
+        .enter()
         .append("circle")
-        .merge(circles) // Menggabungkan data baru dengan elemen yang sudah ada
-        .attr("cx", (d, i) => 70 + i * 85) // Jarak antar lingkaran
-        .attr("cy", height / 2)           // Posisi vertikal di tengah
+        .attr("cx", (d, i) => 80 + i * 90) // Jarak cx disesuaikan agar teks tidak tumpang tindih
+        .attr("cy", 200)
         .attr("r", d => getRadius(d.size))
         .attr("fill", d => getColor(d.price))
         .attr("stroke", "#333")
-        .attr("stroke-width", 2)
-        // Tambahkan efek transisi halus (opsional)
-        .style("opacity", 0)
-        .transition()
-        .duration(800)
-        .style("opacity", 1);
+        .attr("stroke-width", 2);
 
-    // Menghapus elemen yang tidak lagi memiliki data
-    circles.exit().remove();
+    // =========================================
+    // 2. MENAMBAHKAN TEKS (KETERANGAN)
+    // =========================================
+    svg.selectAll("text")
+        .data(data)
+        .enter()
+        .append("text")
+        .text(d => d.name) // Menampilkan Nama Sandwich
+        .attr("x", (d, i) => 80 + i * 90)
+        .attr("y", 260)    // Posisi teks di bawah lingkaran
+        .attr("font-size", "12px")
+        .attr("font-family", "sans-serif")
+        .attr("text-anchor", "middle") // Agar teks rata tengah dengan lingkaran
+        .attr("fill", "black");
 
-}).catch(function(error) {
-    // Menampilkan pesan jika file tidak ditemukan atau error loading
-    console.error("Gagal memuat file CSV. Pastikan path 'Data/sandwiches.csv' sudah benar.", error);
-});
+    // Menambahkan Label Harga (Opsional)
+    svg.selectAll(".price-label")
+        .data(data)
+        .enter()
+        .append("text")
+        .text(d => "$" + d.price)
+        .attr("x", (d, i) => 80 + i * 90)
+        .attr("y", 280)    // Di bawah nama sandwich
+        .attr("font-size", "10px")
+        .attr("text-anchor", "middle")
+        .attr("fill", "gray");
+
+}).catch(error => console.error("Error:", error));
