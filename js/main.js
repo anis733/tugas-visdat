@@ -1,68 +1,82 @@
-d3.csv("Data/sandwiches.csv").then(function(data) {
+// =================
+// 1. DATA SANDWICH 
+// =================
+const data = [
+    { name: "Thesis", price: 7.95, size: "large" },
+    { name: "Dissertation", price: 8.95, size: "large" },
+    { name: "Highlander", price: 6.50, size: "small" },
+    { name: "Just Tuna", price: 6.50, size: "small" },
+    { name: "So-La", price: 7.95, size: "large" },
+    { name: "Special", price: 12.50, size: "small" }
+];
 
-    console.log("Data berhasil dimuat:", data);
+// ==========================================
+// 2. PENGATURAN CANVAS SVG
+// ==========================================
+const width = 700;
+const height = 400;
 
-    data.forEach(d => {
-        d.price = +d.price; 
-    });
+const svg = d3.select("#chart")
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height);
 
-    d3.select("#chart").select("svg").remove();
+// ==========================================
+// 3. FUNGSI LOGIKA VISUAL
+// ==========================================
 
-    const width = 700; // Sedikit diperlebar agar teks tidak mepet
-    const height = 400;
+// Fungsi untuk menentukan ukuran radius
+function getRadius(size) {
+    return size.toLowerCase() === "large" ? 35 : 18;
+}
 
-    const svg = d3.select("#chart")
-        .append("svg")
-        .attr("width", width)
-        .attr("height", height);
+// Fungsi untuk menentukan warna berdasarkan harga
+function getColor(price) {
+    return price < 7.00 ? "#ffa500" : "#4682b4"; // Orange jika < 7, Steelblue jika >= 7
+}
 
-    function getRadius(size) {
-        return size.toLowerCase() === "large" ? 35 : 18;
-    }
+// ==========================================
+// 4. MENGGAMBAR ELEMEN (CIRCLES & TEXT)
+// ==========================================
 
-    function getColor(price) {
-        return price < 7.00 ? "#ffa500" : "#4682b4";
-    }
+// --- Gambar Lingkaran ---
+svg.selectAll("circle")
+    .data(data)
+    .enter()
+    .append("circle")
+    .attr("cx", (d, i) => 80 + i * 95) 
+    .attr("cy", 180)                  
+    .attr("r", d => getRadius(d.size))
+    .attr("fill", d => getColor(d.price))
+    .attr("stroke", "#333")
+    .attr("stroke-width", 2)
+    .style("cursor", "pointer");
 
-    // =========================================
-    // 1. MENGGAMBAR LINGKARAN
-    // =========================================
-    svg.selectAll("circle")
-        .data(data)
-        .enter()
-        .append("circle")
-        .attr("cx", (d, i) => 80 + i * 90) // Jarak cx disesuaikan agar teks tidak tumpang tindih
-        .attr("cy", 200)
-        .attr("r", d => getRadius(d.size))
-        .attr("fill", d => getColor(d.price))
-        .attr("stroke", "#333")
-        .attr("stroke-width", 2);
+// --- Gambar Nama Sandwich ---
+svg.selectAll(".sandwich-name")
+    .data(data)
+    .enter()
+    .append("text")
+    .attr("class", "sandwich-name")
+    .text(d => d.name)
+    .attr("x", (d, i) => 80 + i * 95)
+    .attr("y", 250)                   
+    .attr("font-size", "14px")
+    .attr("font-weight", "bold")
+    .attr("text-anchor", "middle")    
+    .attr("fill", "#333");
 
-    // =========================================
-    // 2. MENAMBAHKAN TEKS (KETERANGAN)
-    // =========================================
-    svg.selectAll("text")
-        .data(data)
-        .enter()
-        .append("text")
-        .text(d => d.name) // Menampilkan Nama Sandwich
-        .attr("x", (d, i) => 80 + i * 90)
-        .attr("y", 260)    // Posisi teks di bawah lingkaran
-        .attr("font-size", "12px")
-        .attr("font-family", "sans-serif")
-        .attr("text-anchor", "middle") // Agar teks rata tengah dengan lingkaran
-        .attr("fill", "black");
+// --- Gambar Label Harga ---
+svg.selectAll(".price-label")
+    .data(data)
+    .enter()
+    .append("text")
+    .attr("class", "price-label")
+    .text(d => "$" + d.price.toFixed(2))
+    .attr("x", (d, i) => 80 + i * 95)
+    .attr("y", 275)                   
+    .attr("font-size", "12px")
+    .attr("text-anchor", "middle")
+    .attr("fill", "gray");
 
-    // Menambahkan Label Harga (Opsional)
-    svg.selectAll(".price-label")
-        .data(data)
-        .enter()
-        .append("text")
-        .text(d => "$" + d.price)
-        .attr("x", (d, i) => 80 + i * 90)
-        .attr("y", 280)    // Di bawah nama sandwich
-        .attr("font-size", "10px")
-        .attr("text-anchor", "middle")
-        .attr("fill", "gray");
-
-}).catch(error => console.error("Error:", error));
+console.log("Visualisasi berhasil dimuat langsung dari array data!");
