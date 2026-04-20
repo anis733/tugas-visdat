@@ -1,17 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Latihan 2 - D3 EU Cities</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-    <h2>EU City Populations</h2>
-    <p id="city-count"></p>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>U.S. Drinking Patterns Visualization</title>
     
-    <div id="chart"></div>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
 
+<body class="container">
+    <header style="margin-top: 20px;">
+        <h2>U.S. State Drinking Patterns in 2012</h2>
+        <p>Latihan Pola Enter-Update D3.js</p>
+    </header>
+
+    <div class="row" style="margin-bottom: 20px;">
+        <div class="col-md-12">
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-primary">
+                    <input value="male" class="sex" type="radio" name="options-sex" id="option1"> Male
+                </label>
+                <label class="btn btn-primary active">
+                    <input value="female" class="sex" type="radio" name="options-sex" id="option2" checked> Female
+                </label>
+            </div>
+
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-primary">
+                    <input value="any" type="radio" name="options-type" id="type1"> Any Drinking
+                </label>
+                <label class="btn btn-primary active">
+                    <input value="binge" type="radio" name="options-type" id="type2" checked> Binge Drinking
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div id="vis"></div>
+
+    <script src="https://code.jquery.com/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <script src="js/barchart.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
