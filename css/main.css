@@ -1,0 +1,40 @@
+/* Styling Sumbu */
+.axis line, 
+.axis path {
+    fill: none;
+    stroke: #333;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-family: sans-serif;
+    font-size: 11px;
+}
+
+/* Judul Sumbu */
+.axis-title {
+    font-weight: bold;
+    font-size: 12px;
+    fill: #555;
+}
+
+/* Styling Batang (Bar) */
+.bar {
+    /* Warna transparan agar terlihat modern */
+    fill: steelblue;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.bar:hover {
+    opacity: 1;
+    fill: orange; /* Berubah warna saat kursor diarahkan */
+}
+
+/* Container */
+#vis {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+}
